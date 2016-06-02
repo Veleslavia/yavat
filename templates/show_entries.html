@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+    <form action="{{ url_for('add_entry') }}" method="post" class="add-entry">
+      <dl>
+        <dt>Title:
+        <dd><input type="text" size="30" name="title">
+        <dt>Text:
+        <dd><textarea name="text" rows="5" cols="40"></textarea>
+        <dd><input type="submit" value="Share">
+      </dl>
+    </form>
+  {% endif %}
+  <h2>{{ video.title }}</h2>
+  <div id="content">
+    <div id="canvas">
+        <video id="video" width="640" height="480" controls>
+            <script src="{{url_for('static', filename='videoplayer.js') }}"></script>
+        </video>
+    </div>
+    <div id="annotation">
+        <button type="button" class="button" id="add_object" onclick="addObject(document.getElementById('annotation'))">Add Object</button>
+        <button type="button" class="button" id="submit" onclick="">Save Annotation</button>
+        <div class="checkbox">
+          <input type="checkbox" class="input-assumpte" name="wrong_category" value="True" id="wrong_category" />
+          <label for="wrong_category">Wrong category</label>
+        </div>
+        <div class="checkbox">
+          <input type="checkbox" class="input-assumpte" name="soloist" value="True" id="soloist" />
+          <label for="soloist">Soloist video</label>
+        </div>
+    </div>
+    <script src="{{url_for('static', filename='draw.js') }}"> </script>
+  </div>
+  <div id="audio">
+      <div id="zoomer"></div>
+      <div id="timeline"></div>
+      <script src="{{url_for('static', filename='waves.js') }}"></script>
+  </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Select Video</h2>
+  {% if error %}<p class="error"><strong>Error:</strong> {{ error }}{% endif %}
+  <ul class="entries">
+  {% for entry in entries %}
+    <div class="entry">
+      <h3>{{ entry[1].name }}</h3><br>
+      <a href="{{ url_for('show_entries', vid=entry[0].youtube_id) }}">{{ entry[0].title }} </a><br>
+      {{ entry[0].description|safe }} <br>
+      <img src="{{ entry[0].thumbnails|safe }}">
+    </div>
+  {% else %}
+    <!-- <li><em>Unbelievable.  No entries here so far</em> -->
+  {% endfor %}
+  </ul>
+{% endblock %}
