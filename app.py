@@ -3,46 +3,17 @@ import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask, jsonify, request, session, redirect, url_for, abort, \
      render_template, flash, send_from_directory
-from flask_sqlalchemy import SQLAlchemy, sqlalchemy
+from flask_sqlalchemy import sqlalchemy
 
 from distutils.util import strtobool
 
-app = Flask(__name__)
-
-# Load default config and override config from an environment variable
-app.config.update(dict(
-    DEBUG=True,
-    SECRET_KEY='development key',
-    USERNAME='admin',
-    PASSWORD='default',
-    CUSTOM_STATIC_PATH='/Users/olya/videodb/',
-    #SQLALCHEMY_DATABASE_URI="postgresql://mvideo:mvideo@mvideodb.s.upf.edu/mvideodb"
-    SQLALCHEMY_DATABASE_URI="postgresql://mvideo:mvideo@localhost/mvideodb"
-))
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-db = SQLAlchemy(app)
-handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
-handler.setLevel(logging.INFO)
-app.logger.addHandler(handler)
-
-
+from database import db
 from models import Video, Queries, Instruments, Tracker
+import settings
 
+app = Flask(__name__)
 _tracker = None
 
-"""
-from flask.json import JSONEncoder
-
-
-class CustomJSONEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Tracker):
-            return obj.to_json()
-        else:
-            JSONEncoder.default(self, obj)
-
-app.json_encoder = CustomJSONEncoder
-"""
 
 @app.route('/')
 def show_entries():
@@ -155,3 +126,22 @@ def new_video():
         distinct(Instruments.name).\
         filter(sqlalchemy.and_(Video.annotation.is_(None)), ~Video.skip.is_(True)).all()
     return render_template('new_video.html', entries=entries)
+
+
+if __name__ == "__main__":
+    # Load default config and override config from an environment variable
+    app.config.update(dict(
+        DEBUG=True,
+        SECRET_KEY=settings.SECRET_KEY,
+        USERNAME=settings.USERNAME,
+        PASSWORD=settings.PASSWORD,
+        CUSTOM_STATIC_PATH=settings.CUSTOM_STATIC_PATH,
+        SQLALCHEMY_DATABASE_URI=settings.SQLALCHEMY_DATABASE_URI
+    ))
+
+    app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+    db.init_app(app)
+    handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
+    handler.setLevel(logging.INFO)
+    app.logger.addHandler(handler)
+    app.run(debug=False)

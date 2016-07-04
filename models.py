@@ -1,9 +1,9 @@
 import os
 import dlib
-import pickle
 
-from app import app, db
+from database import db
 from utils import json_to_frames
+from settings import *
 
 
 class Video(db.Model):
@@ -71,7 +71,7 @@ class Instruments(db.Model):
 class Tracker:
     def __init__(self, json, previous_frame, left, top, width, height):
         self.tracker = dlib.correlation_tracker()
-        self.frames = json_to_frames(os.path.join(app.config['CUSTOM_STATIC_PATH'], json))
+        self.frames = json_to_frames(os.path.join(CUSTOM_STATIC_PATH, json))
         points = [(left, top, left+width, top+height)]
         self.start_new_tracking(previous_frame, points)
 
