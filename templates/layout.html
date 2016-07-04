@@ -1,16 +1,23 @@
 <!doctype html>
 <title>YAVAT</title>
+
 <script src="https://rawgit.com/wavesjs/audio/master/waves-audio.min.js"></script>
 <script src="https://rawgit.com/wavesjs/ui/master/waves-ui.min.js"></script>
 <script src="https://rawgit.com/wavesjs/basic-controllers/master/waves-basic-controllers.min.js"></script>
 <script src="https://rawgit.com/wavesjs/loaders/master/waves-loaders.min.js"></script>
 <script src="https://rawgit.com/wavesjs/waves/master/waves.min.js"></script>
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="{{
     url_for('static', filename='jquery-1.12.3.min.js') }}">\x3C/script>')
 </script>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+<script type="text/javascript"> var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
+
+<link rel="stylesheet" href="{{url_for('static', filename='frameplayer.css') }}">
+<script src="{{url_for('static', filename='frameplayer.js') }}"></script>
 <script src="{{url_for('static', filename='draw.js') }}"> </script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 <div class="page">

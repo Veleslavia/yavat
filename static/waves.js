@@ -19,8 +19,6 @@ var anchorColor = 'SlateGrey';
 var segmentColor = 'SteelBlue';
 var cursorColor = 'SlateGrey';
 
-var filePath = 'static/eeri7gE3ZJ0.wav';
-
 var graphWidth = 640;
 
 /*
@@ -258,11 +256,12 @@ var drawGraph = function(buffer) {
 
       case 'Segment':
         segmentData.push({
-            start: 3.8,
-            duration: 2.4,
-            text: 'Instrument 1'
+            start: playControl.currentPosition,
+            duration: 5,
+            text: 'Instrument Playing'
         });
         graph.update(labelLayer);
+        graph.update(segmentLayer);
         break;
     }
   });

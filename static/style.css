@@ -19,10 +19,10 @@ h3              { font-size: 1em; }
 .error          { background: #F0D6D6; padding: 0.5em; }
 .video          { margin: 0; padding: 0; }
 .video li       { margin: 0.8em 1.2em; }
-.button         { margin-left: 1em; margin-top: 1em; margin-bottom: 1em; display: inline;
+.button         { margin-left: 0.5em; margin-top: 1em; margin-bottom: 1em; display: inline;
                   background-color: #999;
                   color: white;
-                  font-size: 0.8em;
+                  font-size: 0.65em;
                   text-shadow: 0.1em 0.1em #828282;
                  }
 
@@ -79,7 +79,7 @@ h3              { font-size: 1em; }
 .free_comment   { border: 1px solid #ccc; margin-top: 0.5em;}
 
 #content        { display: flex; }
-#canvas         { width:640px; height:480px; position: relative; }
+#canvas         { width:640px; height:360px; position: relative; }
 #annotation     { width:250px; border: 3px solid #ccc; margin-left: 1em; font-size: 0.9em;}
 #audio          { width:640px; }
 
