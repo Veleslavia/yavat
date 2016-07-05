@@ -124,7 +124,7 @@ def new_video():
         join(Queries, Queries.name == Video.query_name).\
         join(Instruments, Queries.class_id == Instruments.class_id).\
         distinct(Instruments.name).\
-        filter(sqlalchemy.and_(Video.annotation.is_(None)), ~Video.skip.is_(True)).all()
+        filter(sqlalchemy.and_(Video.annotation.is_(None), ~Video.skip.is_(True), Video.status == 'ready')).all()
     return render_template('new_video.html', entries=entries)
 
 

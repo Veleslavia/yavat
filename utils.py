@@ -1,10 +1,23 @@
 import os
 import base64
+import datetime
 
 import cv2
 import json
 import numpy as np
 import shutil
+import subprocess
+
+
+def get_length(filename):
+    result = subprocess.Popen(["ffprobe", filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for x in result.stdout.readlines():
+        if "Duration" in x:
+            timestr = x.split()[1][:-1]
+            [hours, minutes, seconds] = [float(x) for x in timestr.split(':')]
+            x = datetime.timedelta(hours=hours, minutes=minutes, seconds=int(seconds))
+            return x.seconds
+    return 0
 
 
 def split(video_filename, fps=30, start=30, time=30, folder='frames'):
@@ -14,6 +27,8 @@ def split(video_filename, fps=30, start=30, time=30, folder='frames'):
     else:
         shutil.rmtree(image_folder)
         os.mkdir(image_folder)
+    if get_length(video_filename) < 60:
+        start = 0
     ret_code = os.system("ffmpeg "
                          "-i {video_filename} "
                          "-s 640x360 "
@@ -31,6 +46,8 @@ def split(video_filename, fps=30, start=30, time=30, folder='frames'):
 
 
 def convert_and_crop_audio(audio_filename, start=30, time=30):
+    if get_length(audio_filename) < 60:
+        start = 0
 
     output_filename = audio_filename.split('.')[0]+".wav"
     ret_code = os.system("ffmpeg "
@@ -57,6 +74,7 @@ def make_json(video_filename):
             img = "data:image/jpg;base64,{0}".format(data_uri)
             frames.append(img)
         json.dump({"frames": frames}, open(os.path.splitext(video_filename)[0]+".json", "w"))
+    shutil.rmtree(folder)
 
 
 def json_to_frames(json_filename):

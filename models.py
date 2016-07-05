@@ -20,6 +20,7 @@ class Video(db.Model):
     is_solo = db.Column(db.Float())
     wrong_category = db.Column(db.Boolean())
     skip = db.Column(db.Boolean())
+    length = db.Column(db.Integer())
 
     @property
     def path(self):
