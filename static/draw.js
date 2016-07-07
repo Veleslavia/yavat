@@ -16,7 +16,7 @@ function saveAnnotation() {
                           comment: document.getElementById(videoAnnotations[i].id+'_comment').value});
         };
 
-    $.getJSON($SCRIPT_ROOT + '/_save_annotation',
+    $.post($SCRIPT_ROOT + '/_save_annotation',
         {annotation_boxes: JSON.stringify(annotations),
          tracking_boxes:  JSON.stringify(tracking_boxes),
          audio_segments: JSON.stringify(segmentData),
@@ -24,7 +24,7 @@ function saveAnnotation() {
          soloist: document.getElementById('soloist').checked,
          instruments: JSON.stringify(forDatabase)
          },
-        function(data) {});
+        function(data, textStatus) {}, "json");
 }
 
 function update_box(new_box, box_id) {
@@ -102,7 +102,7 @@ function addObject(annotation) {
     var select = document.createElement('select');
     select.className = 'select';
     select.id = note.id + '_select';
-    var instruments = ["Accordion","Banjo", "Cello", "Drum", "Flute",
+    var instruments = ["Accordion","Banjo", "Cello", "Drum", "Flute", "Oboe",
                        "Guitar", "Piano", "Saxophone", "Trombone", "Trumpet", "Violin"];
     var fragment = document.createDocumentFragment();
     instruments.forEach(function(instrument, index) {

@@ -8,6 +8,7 @@ import numpy as np
 import shutil
 import subprocess
 
+from settings import REMOTE_DATA_LOCATION
 
 def get_length(filename):
     result = subprocess.Popen(["ffprobe", filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -69,7 +70,7 @@ def make_json(video_filename):
     folder = split(video_filename)
     frames = []
     if folder:
-        for frame_filename in os.listdir(folder):
+        for frame_filename in sorted(os.listdir(folder)):
             data_uri = open(os.path.join(folder, frame_filename), "rb").read().encode("base64").replace("\n", "")
             img = "data:image/jpg;base64,{0}".format(data_uri)
             frames.append(img)
@@ -86,3 +87,9 @@ def json_to_frames(json_filename):
         source = cv2.imdecode(npimg, -1)
         frames.append(source)
     return frames
+
+
+def mount_dataset():
+    os.system("sshfs {remote_data} {local_path}".format(
+        remote_data=REMOTE_DATA_LOCATION,
+        local_path=os.path.expanduser('~/videodb')))

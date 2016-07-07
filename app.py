@@ -10,9 +10,26 @@ from distutils.util import strtobool
 from database import db
 from models import Video, Queries, Instruments, Tracker
 import settings
+import utils
 
 app = Flask(__name__)
 _tracker = None
+
+# Load default config and override config from an environment variable
+app.config.update(dict(
+    DEBUG=True,
+    SECRET_KEY=settings.SECRET_KEY,
+    USERNAME=settings.USERNAME,
+    PASSWORD=settings.PASSWORD,
+    CUSTOM_STATIC_PATH=settings.CUSTOM_STATIC_PATH,
+    SQLALCHEMY_DATABASE_URI=settings.SQLALCHEMY_DATABASE_URI
+))
+
+app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+db.init_app(app)
+handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
+handler.setLevel(logging.INFO)
+app.logger.addHandler(handler)
 
 
 @app.route('/')
@@ -58,16 +75,16 @@ def next_tracking():
                    height=new_height)
 
 
-@app.route('/_save_annotation')
+@app.route('/_save_annotation', methods=['POST'])
 def save_annotation():
     _video = Video.query.get(session.get('vid'))
 
-    annotation_boxes = request.args.get('annotation_boxes')
-    tracking_boxes = request.args.get('tracking_boxes')
-    audio_segments = request.args.get('audio_segments')
-    wrong_category = request.args.get('wrong_category')
-    soloist = request.args.get('soloist')
-    instruments = request.args.get('instruments')
+    annotation_boxes = request.form['annotation_boxes']
+    tracking_boxes = request.form['tracking_boxes']
+    audio_segments = request.form['audio_segments']
+    wrong_category = request.form['wrong_category']
+    soloist = request.form['soloist']
+    instruments = request.form['instruments']
     _video.annotation = json.dumps({"info": instruments,
                                     "manual": annotation_boxes,
                                     "auto": tracking_boxes,
@@ -129,19 +146,5 @@ def new_video():
 
 
 if __name__ == "__main__":
-    # Load default config and override config from an environment variable
-    app.config.update(dict(
-        DEBUG=True,
-        SECRET_KEY=settings.SECRET_KEY,
-        USERNAME=settings.USERNAME,
-        PASSWORD=settings.PASSWORD,
-        CUSTOM_STATIC_PATH=settings.CUSTOM_STATIC_PATH,
-        SQLALCHEMY_DATABASE_URI=settings.SQLALCHEMY_DATABASE_URI
-    ))
-
-    app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-    db.init_app(app)
-    handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
+    utils.mount_dataset()
     app.run(debug=False)
